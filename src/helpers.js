@@ -24,7 +24,7 @@ function fixSimCtlList (list) {
   return list
 }
 
-function getDeviceTypes (args) {
+function getDeviceTypes () {
   let options = { silent: true }
   let list = simctl.list(options).json
   list = fixSimCtlList(list)

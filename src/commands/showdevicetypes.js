@@ -3,13 +3,10 @@ const { getDeviceTypes } = require('../helpers')
 
 class ShowDeviceTypesCommand extends BaseCommand {
   async run () {
-    const output = []
-    getDeviceTypes().forEach(function (device) {
-      output.push(device)
-    })
+    const deviceTypes = getDeviceTypes()
 
-    this.log(output.join('\n'))
-    return output
+    this.log(deviceTypes.join('\n'))
+    return deviceTypes
   }
 }
 

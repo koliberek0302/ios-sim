@@ -16,7 +16,7 @@
     "iOS Simulator"
   ],
   "bin": {
-    "ios-sim": "./bin/run"
+    "ios-sim": "./bin/ios-sim"
   },
   "bugs": {
     "url": "https://github.com/ios-control/ios-sim/issues"

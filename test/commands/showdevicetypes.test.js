@@ -9,7 +9,7 @@ beforeEach(() => {
   command = new TheCommand([])
 })
 
-test('showsdks', function () {
+test('showdevicetypes', function () {
   const json = fixtureJson('simctl-list.json')
   simctl.list = jest.fn(() => {
     return {
@@ -19,11 +19,13 @@ test('showsdks', function () {
 
   return command.run().then((result) => {
     expect(stdout.output).toMatch(fixtureFile('showdevicetypes.txt'))
+    expect(result instanceof Array).toBeTruthy()
+    expect(result.length).toEqual(79)
   })
 })
 
 // see https://github.com/ios-control/ios-sim/issues/234
-test('showsdks - device key in the form of com.apple.CoreSimulator.SimRuntime.XXXX', function () {
+test('showdevicetypes - device key in the form of com.apple.CoreSimulator.SimRuntime.XXXX', function () {
   const json = fixtureJson('simctl-list-issue-234.json')
   simctl.list = jest.fn(() => {
     return {
