@@ -9,7 +9,7 @@ beforeEach(() => {
   command = new TheCommand([])
 })
 
-test('showdevicetypes', function () {
+test('showdevicetypes run', function () {
   const json = fixtureJson('simctl-list.json')
   simctl.list = jest.fn(() => {
     return {
@@ -21,6 +21,19 @@ test('showdevicetypes', function () {
     expect(stdout.output).toMatch(fixtureFile('showdevicetypes.txt'))
     expect(result instanceof Array).toBeTruthy()
     expect(result.length).toEqual(79)
+  })
+})
+
+test('showdevicetypes output', function () {
+  const json = fixtureJson('simctl-list.json')
+  simctl.list = jest.fn(() => {
+    return {
+      json
+    }
+  })
+
+  return command.output().then((result) => {
+    expect(result).toMatch(fixtureFile('showdevicetypes.txt'))
   })
 })
 

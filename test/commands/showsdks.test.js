@@ -9,7 +9,7 @@ beforeEach(() => {
   command = new TheCommand([])
 })
 
-test('showsdks', function () {
+test('showsdks run', function () {
   const json = fixtureJson('simctl-list.json')
   simctl.list = jest.fn(() => {
     return {
@@ -20,5 +20,18 @@ test('showsdks', function () {
   return command.run().then((result) => {
     expect(result).toMatchObject(json.runtimes)
     expect(stdout.output).toMatch(fixtureFile('showsdks.txt'))
+  })
+})
+
+test('showsdks output', function () {
+  const json = fixtureJson('simctl-list.json')
+  simctl.list = jest.fn(() => {
+    return {
+      json
+    }
+  })
+
+  return command.output().then((result) => {
+    expect(result).toMatch(fixtureFile('showsdks.txt'))
   })
 })

@@ -6,16 +6,26 @@ class ShowSdksCommand extends BaseCommand {
     let options = { silent: true, runtimes: true }
     let list = simctl.list(options).json
 
+    this.log(await this.output(list.runtimes))
+    return list.runtimes
+  }
+
+  async output (runtimes) {
+    if (!runtimes) {
+      let options = { silent: true, runtimes: true }
+      let list = simctl.list(options).json
+      runtimes = list.runtimes
+    }
+
     let output = 'Simulator SDK Roots:\n'
-    list.runtimes.forEach(function (runtime) {
+    runtimes.forEach(function (runtime) {
       if (runtime.availability === '(available)') {
         output += `"${runtime.name}" (${runtime.buildversion})\n`
         output += '\t(unknown)\n'
       }
     })
 
-    this.log(output)
-    return list.runtimes
+    return output
   }
 }
 

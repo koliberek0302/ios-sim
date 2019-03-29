@@ -24,12 +24,14 @@ function fixSimCtlList (list) {
   return list
 }
 
-function getDeviceTypes () {
+function getDeviceTypes (druntimes) {
   let options = { silent: true }
   let list = simctl.list(options).json
   list = fixSimCtlList(list)
 
-  let druntimes = findRuntimesGroupByDeviceProperty(list, 'name', true, { lowerCase: true })
+  if (!druntimes) {
+    druntimes = findRuntimesGroupByDeviceProperty(list, 'name', true, { lowerCase: true })
+  }
   let name_id_map = {}
 
   list.devicetypes.forEach(function (device) {
@@ -152,7 +154,7 @@ function parseEnvironmentVariables (envVariables, fixsymctl) {
   return envMap
 }
 
-// Injects specified environt variables to the process and then runs action
+// Injects specified environment variables to the process and then runs action
 // returns environment variables back to original state after action completes
 function withInjectedEnvironmentVariablesToProcess (process, envVariables, action) {
   let oldVariables = Object.assign({}, process.env)
@@ -264,15 +266,15 @@ function getDeviceFromDeviceTypeId (devicetypeid) {
   return ret_obj
 }
 
-function findAvailableRuntime (list, device_name) {
-  device_name = device_name.toLowerCase()
+function findAvailableRuntime (list, devicename) {
+  const device_name = devicename.toLowerCase()
 
   let all_druntimes = findRuntimesGroupByDeviceProperty(list, 'name', true, { lowerCase: true })
   let druntime = all_druntimes[ filterDeviceName(device_name) ] || all_druntimes[ device_name ]
   let runtime_found = druntime && druntime.length > 0
 
   if (!runtime_found) {
-    throw new Error(`No available runtimes could be found for "${device_name}".`)
+    throw new Error(`No available runtimes could be found for "${devicename}".`)
   }
 
   // return most modern runtime
@@ -326,9 +328,8 @@ function fixDeviceGroup (deviceGroup) {
 
   if (match) {
     const [ , , os, version ] = match
-    if (os && version) {
-      return `${os} ${version.replace('-', '.')}`
-    }
+    // all or nothing -- os, version will always have a value for match
+    return `${os} ${version.replace('-', '.')}`
   }
 
   return deviceGroup
@@ -340,6 +341,10 @@ module.exports = {
   withInjectedEnvironmentVariablesToProcess,
   getDeviceFromDeviceTypeId,
   __internal: {
-    fixDeviceGroup
+    findRuntimesGroupByDeviceProperty,
+    fixNameKey,
+    fixDeviceGroup,
+    findAvailableRuntime,
+    getDeviceFromDeviceTypeId
   }
 }

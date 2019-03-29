@@ -3,17 +3,11 @@ const ShowSdksCommand = require('./commands/showsdks')
 const InstallCommand = require('./commands/install')
 const LaunchCommand = require('./commands/launch')
 const StartCommand = require('./commands/start')
-const { getDeviceTypes } = require('./helpers')
-
-function deprecatedMessage (old, nnew) {
-  console.warn(`${old} is deprecated, use ${nnew} instead.`)
-}
+const LegacyFunctions = require('./index.legacy')
 
 module.exports = {
-  getdevicetypes: () => { // legacy for backwards compatibility
-    deprecatedMessage('ios-sim.getdevicetypes', 'ShowDeviceTypesCommand')
-    return getDeviceTypes()
-  },
+  ...LegacyFunctions,
+  // see above legacy functions for usage
   ShowDeviceTypesCommand,
   ShowSdksCommand,
   InstallCommand,

@@ -5,8 +5,16 @@ class ShowDeviceTypesCommand extends BaseCommand {
   async run () {
     const deviceTypes = getDeviceTypes()
 
-    this.log(deviceTypes.join('\n'))
+    this.log(await this.output(deviceTypes))
     return deviceTypes
+  }
+
+  async output (devicetypes) {
+    if (!devicetypes) {
+      devicetypes = getDeviceTypes()
+    }
+
+    return devicetypes.join('\n')
   }
 }
 
