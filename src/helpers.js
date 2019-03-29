@@ -306,6 +306,7 @@ function findFirstAvailableDevice (list) {
 
   Object.keys(list.devices).some(function (deviceGroup) {
     return list.devices[deviceGroup].some(function (device) {
+      deviceGroup = fixDeviceGroup(deviceGroup)
       if (available_runtimes[deviceGroup]) {
         ret_obj = {
           name: device.name,
