@@ -33,7 +33,7 @@ class LaunchCommand extends BaseCommand {
         app_identifier = obj[0].CFBundleIdentifier
       }
 
-      let args = flags.args || []
+      let flagArgs = flags.args || []
       let setenv = flags.setenv || []
 
       let environmentVariables = parseEnvironmentVariables(setenv)
@@ -46,7 +46,7 @@ class LaunchCommand extends BaseCommand {
         // so now we have the deviceid, we can proceed
         simctl.extensions.start(device.id)
         simctl.install(device.id, args.applicationPath)
-        simctl.launch(wait_for_debugger, device.id, app_identifier, args)
+        simctl.launch(wait_for_debugger, device.id, app_identifier, flagArgs)
         simctl.extensions.log(device.id, flags.log)
         if (flags.log) {
           this.log(`logPath: ${path.resolve(flags.log)}`)
