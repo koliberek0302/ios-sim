@@ -47,34 +47,34 @@ describe('when parsing env variables', function () {
   })
 })
 
-describe('fixDeviceGroup tests', () => {
+describe('fixRuntimeName tests', () => {
   test('input gibberish', () => {
-    const result = __internal.fixDeviceGroup('23tgweg24gwdgw')
+    const result = __internal.fixRuntimeName('23tgweg24gwdgw')
     expect(result).toEqual('23tgweg24gwdgw')
   })
 
   test('input com.apple.CoreSimulator.SimRuntime.iOS-12-0', () => {
-    const result = __internal.fixDeviceGroup('com.apple.CoreSimulator.SimRuntime.iOS-12-0')
+    const result = __internal.fixRuntimeName('com.apple.CoreSimulator.SimRuntime.iOS-12-0')
     expect(result).toEqual('iOS 12.0')
   })
 
   test('input com.apple.CoreSimulator.SimRuntime.tvOS-12-1', () => {
-    const result = __internal.fixDeviceGroup('com.apple.CoreSimulator.SimRuntime.tvOS-12-1')
+    const result = __internal.fixRuntimeName('com.apple.CoreSimulator.SimRuntime.tvOS-12-1')
     expect(result).toEqual('tvOS 12.1')
   })
 
   test('input com.apple.CoreSimulator.SimRuntime.watchOS-5-1', () => {
-    const result = __internal.fixDeviceGroup('com.apple.CoreSimulator.SimRuntime.watchOS-5-1')
+    const result = __internal.fixRuntimeName('com.apple.CoreSimulator.SimRuntime.watchOS-5-1')
     expect(result).toEqual('watchOS 5.1')
   })
 
   test('input typo "comX" - comX.apple.CoreSimulator.SimRuntime.iOS-12-0', () => {
-    const result = __internal.fixDeviceGroup('comX.apple.CoreSimulator.SimRuntime.iOS-12-0')
+    const result = __internal.fixRuntimeName('comX.apple.CoreSimulator.SimRuntime.iOS-12-0')
     expect(result).toEqual('comX.apple.CoreSimulator.SimRuntime.iOS-12-0')
   })
 
   test('input typo "iOS 12 0" - com.apple.CoreSimulator.SimRuntime.iOS 12 0', () => {
-    const result = __internal.fixDeviceGroup('comX.apple.CoreSimulator.SimRuntime.iOS 12 0')
+    const result = __internal.fixRuntimeName('comX.apple.CoreSimulator.SimRuntime.iOS 12 0')
     expect(result).toEqual('comX.apple.CoreSimulator.SimRuntime.iOS 12 0')
   })
 })
@@ -115,6 +115,11 @@ describe('getDeviceFromDeviceTypeId', () => {
   test('known device, with runtime', () => {
     const device = __internal.getDeviceFromDeviceTypeId('iPhone-X, 12.1')
     expect(device).toMatchObject({ 'id': 'BAC3ADB2-66B2-41C0-AF0D-8D4D58E2E88A', 'name': 'iPhone X', 'runtime': 'iOS 12.1' })
+  })
+
+  test('known device, with runtime (has com.apple.CoreSimulator.SimRuntime prefix) ', () => {
+    const device = __internal.getDeviceFromDeviceTypeId('iPhone-8, 11.3')
+    expect(device).toMatchObject({ 'id': '85D9D9AE-2749-4169-A3DB-94FC9C8EC8F4', 'name': 'iPhone 8', 'runtime': 'iOS 11.3' })
   })
 
   test('known device, no runtime', () => {
