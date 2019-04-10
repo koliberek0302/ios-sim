@@ -56,11 +56,14 @@ function findFirstAvailableDevice (list) {
 
   Object.keys(list.devices).some(function (deviceGroup) {
     return list.devices[deviceGroup].some(function (device) {
-      if (available_runtimes[deviceGroup]) {
+      // deviceGroup has not been normalized, it can either be the namespaced name, or the
+      // human readable name. We normalize it
+      let normalizedRuntimeName = fixRuntimeName(deviceGroup)
+      if (available_runtimes[normalizedRuntimeName]) {
         ret_obj = {
           name: device.name,
           id: device.udid,
-          runtime: deviceGroup
+          runtime: normalizedRuntimeName
         }
         return true
       }
@@ -89,6 +92,10 @@ function findRuntimesGroupByDeviceProperty (list, deviceProperty, availableOnly,
 
   Object.keys(list.devices).forEach(function (deviceGroup) {
     list.devices[deviceGroup].forEach(function (device) {
+      // deviceGroup has not been normalized, it can either be the namespaced name, or the
+      // human readable name. We normalize it
+      let normalizedRuntimeName = fixRuntimeName(deviceGroup)
+
       let devicePropertyValue = device[deviceProperty]
 
       if (options.lowerCase) {
@@ -98,11 +105,11 @@ function findRuntimesGroupByDeviceProperty (list, deviceProperty, availableOnly,
         runtimes[devicePropertyValue] = []
       }
       if (availableOnly) {
-        if (available_runtimes[deviceGroup]) {
-          runtimes[devicePropertyValue].push(deviceGroup)
+        if (available_runtimes[normalizedRuntimeName]) {
+          runtimes[devicePropertyValue].push(normalizedRuntimeName)
         }
       } else {
-        runtimes[devicePropertyValue].push(deviceGroup)
+        runtimes[devicePropertyValue].push(normalizedRuntimeName)
       }
     })
   })
@@ -200,8 +207,11 @@ function getDeviceFromDeviceTypeId (devicetypeid) {
 
   // now find the deviceid (by runtime and devicename)
   let deviceid_found = Object.keys(list.devices).some(function (deviceGroup) {
+    // deviceGroup has not been normalized, it can either be the namespaced name, or the
+    // human readable name. We normalize it
+    let normalizedRuntimeName = fixRuntimeName(deviceGroup)
     // found the runtime, now find the actual device matching devicename
-    if (deviceGroup === ret_obj.runtime) {
+    if (normalizedRuntimeName === ret_obj.runtime) {
       return list.devices[deviceGroup].some(function (device) {
         if (filterDeviceName(device.name).toLowerCase() === filterDeviceName(ret_obj.name).toLowerCase()) {
           ret_obj.id = device.udid
@@ -310,6 +320,20 @@ function fixSimCtlList (list) {
   })
 
   return list
+}
+
+function fixRuntimeName (runtimeName) {
+  // looking for format 'com.apple.CoreSimulator.SimRuntime.iOS-12-0'
+  const pattern = /^com\.apple\.CoreSimulator\.SimRuntime\.(([a-zA-Z0-9]+)-(\S+))$/i
+  const match = pattern.exec(runtimeName)
+
+  if (match) {
+    const [ , , os, version ] = match
+    // all or nothing -- os, version will always have a value for match
+    return `${os} ${version.replace('-', '.')}`
+  }
+
+  return runtimeName
 }
 
 let lib = {
