@@ -41,6 +41,7 @@
     "@oclif/errors": "^1.1.2",
     "@oclif/plugin-help": "^1",
     "bplist-parser": "^0.0.6",
+    "debug": "^4.1.1",
     "nopt": "1.0.9",
     "plist": "^3.0.1",
     "simctl": "^2"

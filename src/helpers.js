@@ -350,6 +350,7 @@ module.exports = {
   parseEnvironmentVariables,
   withInjectedEnvironmentVariablesToProcess,
   getDeviceFromDeviceTypeId,
+  findFirstAvailableDevice,
   __internal: {
     findRuntimesGroupByDeviceProperty,
     fixNameKey,
